@@ -19,8 +19,11 @@ qdrant_api_key = os.getenv("QDRANT_API_KEY")
 openai_api_key = os.getenv("OPENAI_API_KEY")
 OpenAIEmbeddings.openai_api_key = os.getenv("OPENAI_API_KEY")
 
+with open("path.yml", "r") as p:
+    config = yaml.safe_load(p)
+
 openai_client = OpenAI()
 qdrant_client = QdrantClient(
-    url="https://c79cd5b9-7bef-4139-979b-998b85f7fb26.us-east4-0.gcp.cloud.qdrant.io:6333",
-    api_key="YBfdnGJ7XHg4nHtz9eR-Fbrlpys6uGp8-DBYIlMNekDzPExey3fu0w",
+    url=config['QDRANT_CLUSTER_URL'],
+    api_key=qdrant_api_key,
 )
