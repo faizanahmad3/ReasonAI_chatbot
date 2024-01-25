@@ -1,1 +1,1 @@
-QDRANT_CLUSTER_URL: "https://c79cd5b9-7bef-4139-979b-998b85f7fb26.us-east4-0.gcp.cloud.qdrant.io:6333"
+source_dir: "db"
