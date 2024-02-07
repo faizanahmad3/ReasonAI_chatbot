@@ -1,1 +1,2 @@
 source_dir: "db"
+DB_NAME : "ReasonAI_users_chats"

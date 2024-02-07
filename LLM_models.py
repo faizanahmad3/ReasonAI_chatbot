@@ -16,12 +16,12 @@ embedding_model = HuggingFaceBgeEmbeddings(
 
 # LLM model
 
-# ANYSCALE_MODEL_NAME = 'mistralai/Mistral-7B-Instruct-v0.1'
-# # ANYSCALE_MODEL_NAME = 'mistralai/Mixtral-8x7B-Instruct-v0.1'
-# anyscale_api_base = os.getenv("ANYSCALE_API_BASE")
-# ayscale_api_key = os.getenv("ANYSCALE_API_KEY")
-#
-# mistral_llm = Anyscale(model_name=ANYSCALE_MODEL_NAME, anyscale_api_base=anyscale_api_base,
-#                        ayscale_api_key=ayscale_api_key)
+ANYSCALE_MODEL_NAME = 'mistralai/Mistral-7B-Instruct-v0.1'
+# ANYSCALE_MODEL_NAME = 'mistralai/Mixtral-8x7B-Instruct-v0.1'
+anyscale_api_base = os.getenv("ANYSCALE_API_BASE")
+anyscale_api_key = os.getenv("ANYSCALE_API_KEY")
 
-mistral_llm = ""
+mistral_llm = Anyscale(model_name=ANYSCALE_MODEL_NAME, anyscale_api_base=anyscale_api_base,
+                       anyscale_api_key=anyscale_api_key)
+
+# mistral_llm = ""

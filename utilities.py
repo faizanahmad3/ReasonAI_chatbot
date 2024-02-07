@@ -8,6 +8,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import qdrant
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+from classes import MongoDBChatMessageHistory
 from langchain.schema.messages import BaseMessage
 # from jose import jwt
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue, FilterSelector
@@ -57,7 +58,7 @@ def qdrant_instance_func(db_client, embeddings, user_id):
     return qdrant.Qdrant(
         client=db_client,
         collection_name=user_id,
-        embeddings=embeddings
+        embeddings=embeddings,
     )
 
 
@@ -86,9 +87,19 @@ def doc_retriever(db_client, similar_docs, embeddings, user_id):
     return ret
 
 
-def generating_response(llm, query, template, retriever):
-    qa_prompt = PromptTemplate(input_variables=["query"], template=template)
+def generating_response(llm, question, template, retriever, user_id, sessionid, mongo_uri, config, mongo_db):
+    qa_prompt = PromptTemplate(input_variables=["question"], template=template)
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
+    # create_collection_if_not_exist(userid=user_id, mongo_db=mongo_db)
+    collection = mongo_db[user_id]
+
+    message_history = MongoDBChatMessageHistory(connection_string=mongo_uri,
+                                                database_name=config["DB_NAME"],
+                                                collection_name=user_id,
+                                                session_id=sessionid,
+                                                user_id=user_id
+                                                )
     qa = ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=retriever,
@@ -96,8 +107,20 @@ def generating_response(llm, query, template, retriever):
         condense_question_prompt=qa_prompt,
         verbose=True,
     )
-    response = qa.run(query)
+
+    response = qa({"question": question, "chat_history": message_history.messages})
+    # for event in qa.stream({"question": question, "chat_history": message_history.messages}):
+    #     return event
+    message_history.add_message(message=BaseMessage(type="human", content=question))
+    message_history.add_message(message=BaseMessage(type="ai", content=response["answer"]))
     return response
+
+
+# def create_collection_if_not_exist(userid, mongo_db):
+#     collist = mongo_db.list_collection_names()
+#     if userid not in collist:
+#         col = mongo_db[userid]
+
 
 
 def delete_embeddings_by_id(db_client, document_name, user_id):
