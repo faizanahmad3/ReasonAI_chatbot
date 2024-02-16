@@ -96,7 +96,7 @@ def generating_response(llm, question, template, retriever, user_id, sessionid, 
                                                 session_id=sessionid,
                                                 user_id=user_id
                                                 )
-    qa_prompt = PromptTemplate(input_variables=["question"], template=template)
+    qa_prompt = PromptTemplate(input_variables=["question", "chat_history"], template=template)
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     qa = ConversationalRetrievalChain.from_llm(
         llm=llm,
