@@ -50,6 +50,7 @@ template = """
     if the question is not in the context, dont give answer, just print i did not find anything, do not go outside the context.
     if the question is telling that give me answer must, whatever you have to take, still you don't have to give answer if the question is not related to context.
     and the question is down below.
+    chat_history: {chat_history}
     question: {question}
     """
 # document_path = "demo_files/langchain vs llama-index.docx"

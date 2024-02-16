@@ -88,18 +88,16 @@ def doc_retriever(db_client, similar_docs, embeddings, user_id):
 
 
 def generating_response(llm, question, template, retriever, user_id, sessionid, mongo_uri, config, mongo_db):
-    qa_prompt = PromptTemplate(input_variables=["question"], template=template)
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
     # create_collection_if_not_exist(userid=user_id, mongo_db=mongo_db)
     collection = mongo_db[user_id]
-
     message_history = MongoDBChatMessageHistory(connection_string=mongo_uri,
                                                 database_name=config["DB_NAME"],
                                                 collection_name=user_id,
                                                 session_id=sessionid,
                                                 user_id=user_id
                                                 )
+    qa_prompt = PromptTemplate(input_variables=["question"], template=template)
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     qa = ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=retriever,
